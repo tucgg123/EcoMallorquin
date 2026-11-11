@@ -55,6 +55,11 @@ No hace falta tocar la lógica: todo el contenido está en `assets/js/data/`.
 ## Sobre los reportes
 
 Esta versión es una **demostración sin servidor**: cada reporte queda guardado solo en el navegador de quien lo escribe (`localStorage`) y no se envía a ninguna entidad. La foto adjunta se muestra únicamente mientras la página está abierta. Para recibir reportes reales haría falta conectar un servicio como Firebase.
+## Grupo del ABP Física Mecánica - *Periodo 2025-2*
+- Santiago Araujo
+- Giovanni Barrios
+- Ándres Ovalle
+- Santiago Romero
 
 ## Créditos
 
