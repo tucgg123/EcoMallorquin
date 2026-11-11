@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Biodiversidad | EcoMallorquín</title>
+  <meta name="description" content="Especies de manglar, aves, peces y otros animales de la Ciénaga de Mallorquín.">
+  <link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;600;700&family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">
+        <img src="assets/img/logo.svg" alt="" width="38" height="38">
+        EcoMallorquín
+      </a>
+      <nav class="site-nav" aria-label="Principal">
+        <a href="index.html">Inicio</a>
+        <a href="mapa.html">Mapa</a>
+        <a href="reportar.html">Reportar</a>
+        <a href="biodiversidad.html" aria-current="page">Biodiversidad</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <section class="page-head with-photo">
+      <div class="wrap">
+        <div>
+          <h1>Biodiversidad</h1>
+          <p>Las plantas y los animales que viven en la Ciénaga de Mallorquín.</p>
+        </div>
+        <img src="assets/img/mangle-rojo.webp" alt="Mangle rojo con sus raíces zancudas sobre el agua" width="800" height="500">
+      </div>
+    </section>
+
+    <div class="content">
+      <div class="wrap">
+        <p class="section-intro" style="max-width:46em;margin:0 0 24px">La ciénaga alberga una gran biodiversidad. Su manglar ha sufrido por la salinización, la contaminación y la urbanización, y hoy es objeto de proyectos de restauración con siembras de decenas de miles de plantas.</p>
+        <div class="note-box">
+          <p><strong>Importante:</strong> la ciénaga registra 9 especies de aves amenazadas, y su manglar es prioritario para la conservación porque sirve de zona de alimentación, paso y crianza para muchas especies.</p>
+        </div>
+
+        <div id="filters" class="filters" role="group" aria-label="Filtrar por grupo"></div>
+        <p id="species-count" class="count" role="status" aria-live="polite"></p>
+        <ul id="species-grid" class="species-grid"></ul>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>EcoMallorquín · Gestión y conservación de la Ciénaga de Mallorquín, Barranquilla, Atlántico, Colombia.</p>
+      <p>Mapa: © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · Librería: <a href="https://leafletjs.com">Leaflet</a></p>
+    </div>
+  </footer>
+  <script src="assets/js/data/species.js"></script>
+  <script src="assets/js/biodiversity.js"></script>
+</body>
+</html>

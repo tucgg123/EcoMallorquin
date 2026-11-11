@@ -1,1018 +1,131 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EcoMallorquín - Gestión y Conservación</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary: #2d8659;
-            --secondary: #4a9d7f;
-            --accent: #6bc5a0;
-            --dark: #1a5c3f;
-            --light: #e8f5f0;
-            --danger: #dc3545;
-            --warning: #ffc107;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #e8f5f0 0%, #c8e6d9 100%);
-            min-height: 100vh;
-        }
-
-        /* Header */
-        header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
-            color: white;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        h1 {
-            font-size: 1.8rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .location {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-
-        /* Navigation */
-        nav {
-            background: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-        }
-
-        .nav-btn {
-            flex: 1;
-            min-width: 120px;
-            padding: 1rem;
-            border: none;
-            background: transparent;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--primary);
-            transition: all 0.3s ease;
-            border-bottom: 3px solid transparent;
-        }
-
-        .nav-btn:hover {
-            background: var(--light);
-            border-bottom-color: var(--accent);
-        }
-
-        .nav-btn.active {
-            background: var(--light);
-            border-bottom-color: var(--primary);
-        }
-
-        /* Main Content */
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-
-        .section {
-            display: none;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .section.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Cards */
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 2rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
-        }
-
-        .card h2 {
-            color: var(--primary);
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-        }
-
-        /* Gallery */
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .gallery-item {
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
-        }
-
-        .gallery-item:hover {
-            transform: scale(1.02);
-        }
-
-        .gallery-item img {
-            width: 100%;
-            height: 250px;
-            object-fit: cover;
-            display: block;
-        }
-
-        .gallery-caption {
-            padding: 1rem;
-            background: white;
-            color: #555;
-            font-size: 0.9rem;
-        }
-
-        /* Map Section */
-        #map {
-            width: 100%;
-            height: 500px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .map-controls {
-            margin-top: 1rem;
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 0.8rem 1.5rem;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--dark);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-
-        .btn-secondary {
-            background: var(--secondary);
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: var(--primary);
-        }
-
-        /* Report Form */
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--dark);
-            font-weight: 600;
-        }
-
-        input, textarea, select {
-            width: 100%;
-            padding: 0.8rem;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-        }
-
-        input:focus, textarea:focus, select:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
-
-        .photo-upload {
-            border: 2px dashed #ddd;
-            border-radius: 8px;
-            padding: 2rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .photo-upload:hover {
-            border-color: var(--primary);
-            background: var(--light);
-        }
-
-        /* Reports List */
-        .reports-list {
-            display: grid;
-            gap: 1rem;
-        }
-
-        .report-item {
-            background: var(--light);
-            padding: 1.5rem;
-            border-radius: 8px;
-            border-left: 4px solid var(--primary);
-        }
-
-        .report-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-            margin-bottom: 0.5rem;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .report-type {
-            display: inline-block;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        .type-ambiental {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .type-infraestructura {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .report-date {
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        /* Flora y Fauna */
-        .species-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-top: 1.5rem;
-        }
-
-        .species-card {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .species-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 12px rgba(0,0,0,0.15);
-        }
-
-        .species-img {
-            width: 100%;
-            height: 200px;
-            background: linear-gradient(135deg, var(--accent) 0%, var(--secondary) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4rem;
-        }
-
-        .species-content {
-            padding: 1.5rem;
-        }
-
-        .species-name {
-            font-size: 1.2rem;
-            color: var(--primary);
-            margin-bottom: 0.3rem;
-        }
-
-        .species-scientific {
-            font-style: italic;
-            color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-        }
-
-        .species-description {
-            color: #555;
-            line-height: 1.6;
-            font-size: 0.95rem;
-        }
-
-        .species-status {
-            margin-top: 1rem;
-            padding: 0.5rem;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-align: center;
-        }
-
-        .status-preocupacion {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .status-vulnerable {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        .status-estable {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .status-prioritario {
-            background: #cce5ff;
-            color: #004085;
-        }
-
-        /* Filter */
-        .filter-buttons {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-        }
-
-        .filter-btn {
-            padding: 0.6rem 1.2rem;
-            border: 2px solid var(--primary);
-            background: white;
-            color: var(--primary);
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .filter-btn:hover, .filter-btn.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        /* Success Message */
-        .success-message {
-            background: #d4edda;
-            color: #155724;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-top: 1rem;
-            border: 1px solid #c3e6cb;
-            display: none;
-        }
-
-        .success-message.show {
-            display: block;
-            animation: slideDown 0.5s ease;
-        }
-
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Stats */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-top: 1.5rem;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, var(--light) 0%, white 100%);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border-left: 4px solid var(--primary);
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            color: #666;
-            font-size: 0.95rem;
-        }
-
-        /* Info Section */
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-top: 1.5rem;
-        }
-
-        .info-card {
-            background: linear-gradient(135deg, var(--light) 0%, white 100%);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border-left: 4px solid var(--primary);
-        }
-
-        .info-card h3 {
-            color: var(--primary);
-            margin-bottom: 0.8rem;
-        }
-
-        .info-card p {
-            color: #555;
-            line-height: 1.6;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 1.4rem;
-            }
-
-            .nav-btn {
-                min-width: 100px;
-                padding: 0.8rem;
-                font-size: 0.85rem;
-            }
-
-            #map {
-                height: 400px;
-            }
-
-            .species-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .gallery {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EcoMallorquín: gestión y conservación de la Ciénaga de Mallorquín</title>
+  <meta name="description" content="Mapa, reportes ciudadanos y biodiversidad de la Ciénaga de Mallorquín, humedal costero y manglar en Barranquilla, Colombia.">
+  <link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;600;700&family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+  <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
-    <header>
-        <div class="header-content">
-            <div>
-                <h1>🌊 Ciénaga de Mallorquín</h1>
-                <div class="location">📍 Barranquilla, Atlántico - Colombia</div>
-            </div>
-        </div>
-    </header>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
 
-    <nav>
-        <div class="nav-container">
-            <button class="nav-btn active" onclick="showSection('inicio')">🏠 Inicio</button>
-            <button class="nav-btn" onclick="showSection('mapa')">🗺️ Mapa</button>
-            <button class="nav-btn" onclick="showSection('reportes')">📢 Reportar</button>
-            <button class="nav-btn" onclick="showSection('fauna-flora')">🦜 Fauna y Flora</button>
-        </div>
-    </nav>
-
-    <div class="container">
-        <!-- Inicio Section -->
-        <section id="inicio" class="section active">
-            <div class="card">
-                <h2>Bienvenido al Sistema de Gestión Ambiental</h2>
-                <p style="color: #555; line-height: 1.8; margin-bottom: 1.5rem;">
-                    La Ciénaga de Mallorquín es un ecosistema de humedal costero de gran importancia ecológica ubicado 
-                    en el norte de Barranquilla. Este valioso ecosistema de manglar es hogar de más de 150 especies de 
-                    aves, 36-42 especies de peces, y múltiples especies de flora que cumplen funciones vitales para la región.
-                </p>
-
-                <div class="gallery">
-                    <div class="gallery-item">
-                        <img src="cienaga1.jpg" alt="Vista aérea de la Ciénaga de Mallorquín" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22250%22%3E%3Crect fill=%22%234a9d7f%22 width=%22400%22 height=%22250%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22 font-family=%22Arial%22 font-size=%2220%22 fill=%22white%22%3ECiénaga de Mallorquín%3C/text%3E%3C/svg%3E'">
-                        <div class="gallery-caption">Vista aérea del ecoparque y senderos ecológicos sobre el manglar</div>
-                    </div>
-                    <div class="gallery-item">
-                        <img src="cienaga2.jpg" alt="Manglar de la Ciénaga" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22250%22%3E%3Crect fill=%22%236bc5a0%22 width=%22400%22 height=%22250%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22 font-family=%22Arial%22 font-size=%2220%22 fill=%22white%22%3EManglar%3C/text%3E%3C/svg%3E'">
-                        <div class="gallery-caption">Mangle rojo con sus características raíces zancudas</div>
-                    </div>
-                    <div class="gallery-item">
-                        <img src="cienga3.jpeg" alt="Senderos ecológicos" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22250%22%3E%3Crect fill=%22%232d8659%22 width=%22400%22 height=%22250%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22 font-family=%22Arial%22 font-size=%2220%22 fill=%22white%22%3ESenderos Ecológicos%3C/text%3E%3C/svg%3E'">
-                        <div class="gallery-caption">Senderos flotantes que permiten la observación sin impactar el ecosistema</div>
-                    </div>
-                </div>
-                
-                <div class="info-grid">
-                    <div class="info-card">
-                        <h3>🗺️ Explora el Mapa</h3>
-                        <p>Navega por la ciénaga con nuestro mapa interactivo y ubícate en tiempo real usando GPS.</p>
-                    </div>
-                    <div class="info-card">
-                        <h3>📢 Reporta Problemas</h3>
-                        <p>Ayúdanos a cuidar el ecosistema reportando problemas ambientales o de infraestructura.</p>
-                    </div>
-                    <div class="info-card">
-                        <h3>🦜 Conoce la Biodiversidad</h3>
-                        <p>Descubre las especies de fauna y flora que habitan este importante humedal.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h2>Información para Visitantes</h2>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-number">9:00-12:00</div>
-                        <div class="stat-label">⏰ Mayor Actividad Humana</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">10:30-13:30</div>
-                        <div class="stat-label">☀️ Mayor Radiación Solar</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">+300,000</div>
-                        <div class="stat-label">👥 Visitas Anuales Recientes</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">Fin de Semana</div>
-                        <div class="stat-label">📅 Mayor Concurrencia</div>
-                    </div>
-                </div>
-                <p style="color: #666; margin-top: 1.5rem; text-align: center; font-size: 0.9rem;">
-                    💡 <strong>Recomendación:</strong> Para una mejor experiencia y menor exposición solar, 
-                    considera visitar antes de las 9:00 AM o después de las 2:00 PM en días entre semana.
-                </p>
-            </div>
-        </section>
-
-        <!-- Mapa Section -->
-        <section id="mapa" class="section">
-            <div class="card">
-                <h2>Mapa Interactivo de la Ciénaga</h2>
-                <div id="map"></div>
-                <div class="map-controls">
-                    <button class="btn btn-primary" onclick="locateUser()">📍 Mi Ubicación</button>
-                    <button class="btn btn-secondary" onclick="centerMap()">🎯 Centrar en Ciénaga</button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Reportes Section -->
-        <section id="reportes" class="section">
-            <div class="card">
-                <h2>Reportar Problema</h2>
-                <form id="reportForm">
-                    <div class="form-group">
-                        <label for="reportType">Tipo de Reporte</label>
-                        <select id="reportType" required>
-                            <option value="">Seleccione un tipo</option>
-                            <option value="ambiental">🌱 Problema Ambiental</option>
-                            <option value="infraestructura">🏗️ Problema de Infraestructura</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="reportTitle">Título</label>
-                        <input type="text" id="reportTitle" placeholder="Ej: Acumulación de basura en zona norte" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="reportDescription">Descripción</label>
-                        <textarea id="reportDescription" placeholder="Describe el problema en detalle..." required></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="reportLocation">Ubicación</label>
-                        <input type="text" id="reportLocation" placeholder="Ej: Cerca del puente, zona oeste">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Fotografía (opcional)</label>
-                        <div class="photo-upload" onclick="document.getElementById('photoInput').click()">
-                            <div>📷 Click para adjuntar foto</div>
-                            <input type="file" id="photoInput" accept="image/*" style="display: none;">
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">Enviar Reporte</button>
-                </form>
-
-                <div id="successMessage" class="success-message">
-                    ✅ Reporte enviado exitosamente. ¡Gracias por contribuir a la conservación de la ciénaga!
-                </div>
-            </div>
-
-            <div class="card">
-                <h2>Reportes Recientes</h2>
-                <div class="reports-list" id="reportsList"></div>
-            </div>
-        </section>
-
-        <!-- Fauna y Flora Section -->
-        <section id="fauna-flora" class="section">
-            <div class="card">
-                <h2>Biodiversidad de la Ciénaga de Mallorquín</h2>
-                <p style="color: #555; margin-bottom: 1rem; line-height: 1.6;">
-                    La Ciénaga de Mallorquín alberga una extraordinaria biodiversidad. El ecosistema de manglar, 
-                    aunque ha sufrido degradación por salinización, contaminación y urbanización, está siendo 
-                    objeto de importantes proyectos de restauración con siembras de decenas de miles de plantas.
-                </p>
-                <p style="color: #555; margin-bottom: 1.5rem; line-height: 1.6;">
-                    <strong>Nota importante:</strong> La ciénaga registra 9 especies de aves amenazadas y el 
-                    ecosistema de manglar es prioritario para conservación debido a su función como área de 
-                    alimentación, paso y crianza para múltiples especies.
-                </p>
-
-                <div class="filter-buttons">
-                    <button class="filter-btn active" onclick="filterSpecies('todos')">Todos</button>
-                    <button class="filter-btn" onclick="filterSpecies('manglar')">🌳 Manglar</button>
-                    <button class="filter-btn" onclick="filterSpecies('aves')">🦜 Aves</button>
-                    <button class="filter-btn" onclick="filterSpecies('peces')">🐟 Peces</button>
-                    <button class="filter-btn" onclick="filterSpecies('otros')">🦎 Otros</button>
-                </div>
-
-                <div class="species-grid" id="speciesGrid"></div>
-            </div>
-        </section>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">
+        <img src="assets/img/logo.svg" alt="" width="38" height="38">
+        EcoMallorquín
+      </a>
+      <nav class="site-nav" aria-label="Principal">
+        <a href="index.html" aria-current="page">Inicio</a>
+        <a href="mapa.html">Mapa</a>
+        <a href="reportar.html">Reportar</a>
+        <a href="biodiversidad.html">Biodiversidad</a>
+      </nav>
     </div>
+  </header>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script>
-        // Navigation
-        function showSection(sectionId) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            
-            document.getElementById(sectionId).classList.add('active');
-            event.target.classList.add('active');
+  <main id="contenido">
+    <section class="hero">
+      <div class="hero-media">
+        <img src="assets/img/vista-aerea.webp" alt="Vista aérea del ecoparque de la Ciénaga de Mallorquín: senderos de madera sobre el agua, rodeados de manglar" width="1800" height="1012" fetchpriority="high">
+      </div>
+      <div class="wrap">
+        <div class="hero-panel">
+          <h1>Ciénaga de Mallorquín</h1>
+          <p>Humedal costero y manglar en el norte de Barranquilla. Recorre el mapa, reporta problemas y conoce las especies que viven aquí.</p>
+          <div class="hero-actions">
+            <a class="btn btn-light" href="mapa.html">Ver el mapa</a>
+            <a class="btn btn-ghost-light" href="reportar.html">Reportar un problema</a>
+          </div>
+        </div>
+      </div>
+    </section>
 
-            if (sectionId === 'mapa' && !window.mapInitialized) {
-                initMap();
-            }
-        }
+    <section class="section">
+      <div class="wrap intro">
+        <div>
+          <h2 class="section-title">Un humedal vivo junto a la ciudad</h2>
+          <p>La Ciénaga de Mallorquín es un humedal costero de gran importancia ecológica, ubicado en el norte de Barranquilla. Su manglar es hogar de muchas aves y peces, y de plantas que cumplen funciones vitales para la región.</p>
+        </div>
+        <dl class="facts">
+          <div><dt>Más de 150</dt><dd>especies de aves</dd></div>
+          <div><dt>36 a 42</dt><dd>especies de peces</dd></div>
+          <div><dt>Más de 300.000</dt><dd>visitas anuales recientes</dd></div>
+        </dl>
+      </div>
+    </section>
 
-        // Map initialization
-        let map, userMarker;
-        window.mapInitialized = false;
+    <section class="section" aria-labelledby="que-hacer">
+      <div class="wrap">
+        <h2 class="section-title" id="que-hacer">Qué puedes hacer aquí</h2>
+        <ul class="doors">
+          <li><a href="mapa.html"><span class="door-name">Explorar el mapa</span><span class="door-text">Ubica los lugares de interés y mira dónde estás con el GPS de tu celular.</span><span class="door-go">Abrir mapa</span></a></li>
+          <li><a href="reportar.html"><span class="door-name">Reportar un problema</span><span class="door-text">Ayúdanos a cuidar el ecosistema avisando de problemas ambientales o de infraestructura.</span><span class="door-go">Hacer un reporte</span></a></li>
+          <li><a href="biodiversidad.html"><span class="door-name">Conocer la biodiversidad</span><span class="door-text">Descubre las especies de fauna y flora que habitan este humedal.</span><span class="door-go">Ver especies</span></a></li>
+        </ul>
+      </div>
+    </section>
 
-        function initMap() {
-            const cienagaCoords = [11.0085, -74.8547];
-            
-            map = L.map('map').setView(cienagaCoords, 13);
-            
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap contributors'
-            }).addTo(map);
+    <section class="section" aria-labelledby="recorrido">
+      <div class="wrap">
+        <h2 class="section-title" id="recorrido">El recorrido</h2>
+        <div class="gallery">
+          <figure>
+            <img src="assets/img/mangle-rojo.webp" alt="Mangle rojo con sus raíces zancudas sobre el agua" width="800" height="500" loading="lazy">
+            <figcaption>Mangle rojo con sus características raíces zancudas.</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/img/sendero-flotante.webp" alt="Vista aérea de un sendero de madera que cruza el agua junto al manglar" width="768" height="512" loading="lazy">
+            <figcaption>Senderos flotantes que permiten la observación sin impactar el ecosistema.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
 
-            L.marker(cienagaCoords).addTo(map)
-                .bindPopup('<b>Ciénaga de Mallorquín</b><br>Humedal Costero - Ecosistema de Manglar')
-                .openPopup();
+    <section class="section" aria-labelledby="cuando-ir">
+      <div class="wrap">
+        <h2 class="section-title" id="cuando-ir">Cuándo ir</h2>
+        <p class="section-intro">Para una mejor experiencia y menos sol, visita antes de las 9:00 a. m. o después de las 2:00 p. m., en días entre semana.</p>
+        <div class="day">
+          <div class="day-row">
+            <div class="day-label">Mejores horas<small>Antes de las 9:00 o después de las 14:00, entre semana</small></div>
+            <div class="day-track" aria-hidden="true">
+              <span class="bar bar-good" style="left:0;width:25%"></span>
+              <span class="bar bar-good" style="left:66.667%;width:33.333%"></span>
+            </div>
+          </div>
+          <div class="day-row">
+            <div class="day-label">Más gente<small>De 9:00 a 12:00. Los fines de semana hay más visitantes</small></div>
+            <div class="day-track" aria-hidden="true">
+              <span class="bar bar-crowd" style="left:25%;width:25%"></span>
+            </div>
+          </div>
+          <div class="day-row">
+            <div class="day-label">Sol más fuerte<small>De 10:30 a 13:30</small></div>
+            <div class="day-track" aria-hidden="true">
+              <span class="bar bar-sun" style="left:37.5%;width:25%"></span>
+            </div>
+          </div>
+          <div class="day-row day-axis-row" aria-hidden="true">
+            <div class="day-label-spacer"></div>
+            <div class="day-axis"><span style="left:0.000%">6:00</span><span style="left:16.667%">8:00</span><span style="left:33.333%">10:00</span><span style="left:50.000%">12:00</span><span style="left:66.667%">14:00</span><span style="left:83.333%">16:00</span><span style="left:100.000%">18:00</span></div>
+          </div>
+          <p class="day-note">Confirma el horario de apertura del ecoparque antes de ir.</p>
+        </div>
+      </div>
+    </section>
+  </main>
 
-            const pois = [
-                { coords: [11.0150, -74.8600], name: 'Zona de Observación de Aves', icon: '🦜' },
-                { coords: [11.0050, -74.8500], name: 'Área de Manglar', icon: '🌳' },
-                { coords: [11.0020, -74.8580], name: 'Puerto Pesquero', icon: '🎣' },
-                { coords: [10.9980, -74.8520], name: 'Zona de Anidación', icon: '🥚' },
-                { coords: [11.0100, -74.8450], name: 'Senderos Ecológicos', icon: '🚶' }
-            ];
-
-            pois.forEach(poi => {
-                L.marker(poi.coords).addTo(map)
-                    .bindPopup(`${poi.icon} <b>${poi.name}</b>`);
-            });
-
-            window.mapInitialized = true;
-        }
-
-        function locateUser() {
-            if (!navigator.geolocation) {
-                alert('Tu navegador no soporta geolocalización');
-                return;
-            }
-
-            navigator.geolocation.getCurrentPosition(
-                position => {
-                    const { latitude, longitude } = position.coords;
-                    
-                    if (userMarker) {
-                        map.removeLayer(userMarker);
-                    }
-
-                    userMarker = L.marker([latitude, longitude], {
-                        icon: L.divIcon({
-                            className: 'user-marker',
-                            html: '📍',
-                            iconSize: [30, 30]
-                        })
-                    }).addTo(map)
-                        .bindPopup('Tu ubicación actual')
-                        .openPopup();
-
-                    map.setView([latitude, longitude], 15);
-                },
-                error => {
-                    alert('No se pudo obtener tu ubicación. Verifica los permisos del navegador.');
-                }
-            );
-        }
-
-        function centerMap() {
-            map.setView([11.0085, -74.8547], 13);
-        }
-
-        // Reports
-        let reports = [
-            { id: 1, type: 'ambiental', title: 'Acumulación de residuos plásticos', location: 'Zona norte del manglar', date: '2025-11-10', description: 'Se observa acumulación de botellas plásticas y residuos en la orilla que afectan el ecosistema.' },
-            { id: 2, type: 'infraestructura', title: 'Sendero flotante requiere mantenimiento', location: 'Senderos ecológicos', date: '2025-11-08', description: 'Algunas secciones del sendero de madera muestran desgaste y necesitan reparación para seguridad de visitantes.' },
-            { id: 3, type: 'ambiental', title: 'Vertimiento de aguas residuales', location: 'Sector oeste', date: '2025-11-05', description: 'Se detectó posible vertimiento directo de aguas sin tratamiento afectando la calidad del agua.' }
-        ];
-
-        function renderReports() {
-            const container = document.getElementById('reportsList');
-            container.innerHTML = reports.map(report => `
-                <div class="report-item">
-                    <div class="report-header">
-                        <span class="report-type type-${report.type}">
-                            ${report.type === 'ambiental' ? '🌱 Ambiental' : '🏗️ Infraestructura'}
-                        </span>
-                        <span class="report-date">${report.date}</span>
-                    </div>
-                    <h3 style="color: var(--primary); margin: 0.5rem 0;">${report.title}</h3>
-                    <p style="color: #666; margin: 0.5rem 0;">${report.description}</p>
-                    <p style="color: #888; font-size: 0.9rem;">📍 ${report.location}</p>
-                </div>
-            `).join('');
-        }
-
-        document.getElementById('reportForm').addEventListener('submit', e => {
-            e.preventDefault();
-            
-            const newReport = {
-                id: reports.length + 1,
-                type: document.getElementById('reportType').value,
-                title: document.getElementById('reportTitle').value,
-                location: document.getElementById('reportLocation').value,
-                date: new Date().toISOString().split('T')[0],
-                description: document.getElementById('reportDescription').value
-            };
-
-            reports.unshift(newReport);
-            renderReports();
-            
-            e.target.reset();
-            
-            const successMsg = document.getElementById('successMessage');
-            successMsg.classList.add('show');
-            setTimeout(() => successMsg.classList.remove('show'), 5000);
-        });
-
-        // Species data - Basado en información real de la Ciénaga de Mallorquín
-        const speciesData = [
-            // MANGLAR (Flora)
-            { 
-                name: 'Mangle Rojo', 
-                scientific: 'Rhizophora mangle', 
-                type: 'manglar', 
-                description: 'Árbol perennifolio dominante en la ciénaga, con raíces zancudas características que estabilizan el sedimento y dan estructura al ecosistema. Fundamental para la protección costera.', 
-                status: 'prioritario', 
-                icon: '🌳' 
-            },
-            { 
-                name: 'Mangle Negro', 
-                scientific: 'Avicennia germinans', 
-                type: 'manglar', 
-                description: 'Presenta raíces aéreas (neumatóforos) que permiten la respiración en suelos anóxicos. Muy común en Mallorquín y tolerante a alta salinidad.', 
-                status: 'prioritario', 
-                icon: '🌳' 
-            },
-            { 
-                name: 'Mangle Blanco', 
-                scientific: 'Laguncularia racemosa', 
-                type: 'manglar', 
-                description: 'Tolera zonas más elevadas de la franja intermareal. Frecuente en la ciénaga, crece en áreas con menor influencia salina directa.', 
-                status: 'prioritario', 
-                icon: '🌳' 
-            },
-            { 
-                name: 'Mangle Amarillo', 
-                scientific: 'Conocarpus erectus', 
-                type: 'manglar', 
-                description: 'Localizado en áreas inundables interiores según inventarios locales. Complementa el ecosistema de manglar en zonas de transición.', 
-                status: 'prioritario', 
-                icon: '🌳' 
-            },
-            { 
-                name: 'Botoncillo', 
-                scientific: 'Conocarpus erectus', 
-                type: 'manglar', 
-                description: 'Arbusto/árbol costero frecuente en bordes de manglar. Importante para la estabilización de zonas de transición entre manglar y tierra firme.', 
-                status: 'estable', 
-                icon: '🌿' 
-            },
-            
-            // AVES
-            { 
-                name: 'Pato Silbón de Cara Blanca', 
-                scientific: 'Dendrocygna viduata', 
-                type: 'aves', 
-                description: 'Ave acuática residente, común en humedales. Se alimenta de vegetación acuática y semillas. Forma grandes grupos en zonas de agua abierta.', 
-                status: 'estable', 
-                icon: '🦆' 
-            },
-            { 
-                name: 'Golondrina Tijereta', 
-                scientific: 'Hirundo rustica', 
-                type: 'aves', 
-                description: 'Ave migratoria boreal que visita la ciénaga. Insectívoro aéreo que utiliza el humedal como área de alimentación durante la migración.', 
-                status: 'estable', 
-                icon: '🕊️' 
-            },
-            { 
-                name: 'Garza Tigre', 
-                scientific: 'Tigrisoma lineatum', 
-                type: 'aves', 
-                description: 'Garza grande de comportamiento piscívoro. Habita en áreas de manglar y zonas con vegetación densa. Cazador solitario y sigiloso.', 
-                status: 'preocupacion', 
-                icon: '🦅' 
-            },
-            { 
-                name: 'Ostrero Americano', 
-                scientific: 'Haematopus palliatus', 
-                type: 'aves', 
-                description: 'Residente costero que se observa en zonas intermareales. Se alimenta de moluscos y crustáceos usando su característico pico rojo.', 
-                status: 'estable', 
-                icon: '🦜' 
-            },
-            { 
-                name: 'Garza Rojiza', 
-                scientific: 'Egretta rufescens', 
-                type: 'aves', 
-                description: 'Registrada en inventarios locales. Ave costera especializada en pesca activa en aguas someras. Presenta comportamiento de caza característico.', 
-                status: 'vulnerable', 
-                icon: '🦢' 
-            },
-            
-            // PECES
-            { 
-                name: 'Lisa', 
-                scientific: 'Mugil incilis', 
-                type: 'peces', 
-                description: 'Pez de la familia Mugilidae. Visitante del mar Caribe que migra según salinidad. La ciénaga funciona como área de alimentación y crianza.', 
-                status: 'estable', 
-                icon: '🐟' 
-            },
-            { 
-                name: 'Anchoveta Caribeña', 
-                scientific: 'Cetengraulis edentulus', 
-                type: 'peces', 
-                description: 'Pez pequeño de la familia Engraulidae. Importante en la cadena alimenticia del ecosistema. Forma cardúmenes en aguas estuarinas.', 
-                status: 'estable', 
-                icon: '🐟' 
-            },
-            { 
-                name: 'Mojarra', 
-                scientific: 'Diapterus rhombeus', 
-                type: 'peces', 
-                description: 'Familia Gerreidae. Común en la ciénaga, utiliza el humedal como zona de paso entre el mar y el río Magdalena según condiciones de salinidad.', 
-                status: 'estable', 
-                icon: '🐟' 
-            },
-            { 
-                name: 'Mojarra Plateada', 
-                scientific: 'Eugerres plumieri', 
-                type: 'peces', 
-                description: 'Especie registrada en muestreos de la ciénaga. Se adapta a variaciones de salinidad, aprovechando el estuario para alimentación.', 
-                status: 'estable', 
-                icon: '🐟' 
-            },
-            
-            // OTROS (Reptiles, Mamíferos, Crustáceos)
-            { 
-                name: 'Boa Constrictor', 
-                scientific: 'Boa constrictor', 
-                type: 'otros', 
-                description: 'Reptil registrado en inventarios regionales. Habita en zonas de manglar y áreas riparias. Depredador que controla poblaciones de roedores.', 
-                status: 'preocupacion', 
-                icon: '🐍' 
-            },
-            { 
-                name: 'Lagarto Tegú', 
-                scientific: 'Tupinambis teguixin', 
-                type: 'otros', 
-                description: 'Lagarto grande presente en la región. Omnívoro que habita en zonas terrestres cercanas al manglar. Importante dispersor de semillas.', 
-                status: 'estable', 
-                icon: '🦎' 
-            },
-            { 
-                name: 'Cangrejo Violinista', 
-                scientific: 'Uca spp.', 
-                type: 'otros', 
-                description: 'Crustáceo característico de zonas de manglar. Los machos presentan una pinza grande distintiva. Fundamental en el ciclo de nutrientes del manglar.', 
-                status: 'estable', 
-                icon: '🦀' 
-            },
-            { 
-                name: 'Mapache', 
-                scientific: 'Procyon cancrivorus', 
-                type: 'otros', 
-                description: 'Mamífero registrado entre las ~11 especies de mamíferos de la ciénaga. Omnívoro nocturno que habita en zonas de manglar y riparias.', 
-                status: 'estable', 
-                icon: '🦝' 
-            }
-        ];
-
-        let currentFilter = 'todos';
-
-        function renderSpecies() {
-            const container = document.getElementById('speciesGrid');
-            const filtered = currentFilter === 'todos' 
-                ? speciesData 
-                : speciesData.filter(s => s.type === currentFilter);
-
-            container.innerHTML = filtered.map(species => `
-                <div class="species-card">
-                    <div class="species-img">${species.icon}</div>
-                    <div class="species-content">
-                        <h3 class="species-name">${species.name}</h3>
-                        <p class="species-scientific">${species.scientific}</p>
-                        <p class="species-description">${species.description}</p>
-                        <div class="species-status status-${species.status}">
-                            ${species.status === 'vulnerable' ? '⚠️ Vulnerable' : 
-                              species.status === 'preocupacion' ? '⚡ Preocupación Menor' : 
-                              species.status === 'prioritario' ? '🌳 Ecosistema Prioritario' :
-                              '✅ Población Estable'}
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function filterSpecies(type) {
-            currentFilter = type;
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
-            renderSpecies();
-        }
-
-        // Initialize
-        renderReports();
-        renderSpecies();
-    </script>
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>EcoMallorquín · Gestión y conservación de la Ciénaga de Mallorquín, Barranquilla, Atlántico, Colombia.</p>
+      <p>Mapa: © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · Librería: <a href="https://leafletjs.com">Leaflet</a></p>
+    </div>
+  </footer>
 </body>
 </html>

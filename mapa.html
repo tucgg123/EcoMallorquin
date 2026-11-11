@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mapa | EcoMallorquín</title>
+  <meta name="description" content="Mapa interactivo de la Ciénaga de Mallorquín con lugares de interés y tu ubicación.">
+  <link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;600;700&family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+  <link rel="stylesheet" href="assets/vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">
+        <img src="assets/img/logo.svg" alt="" width="38" height="38">
+        EcoMallorquín
+      </a>
+      <nav class="site-nav" aria-label="Principal">
+        <a href="index.html">Inicio</a>
+        <a href="mapa.html" aria-current="page">Mapa</a>
+        <a href="reportar.html">Reportar</a>
+        <a href="biodiversidad.html">Biodiversidad</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <section class="page-head">
+      <div class="wrap">
+        <h1>Mapa de la ciénaga</h1>
+        <p>Elige un lugar de la lista para verlo en el mapa, o usa tu ubicación para saber dónde estás.</p>
+      </div>
+    </section>
+
+    <div class="content">
+      <div class="wrap map-layout">
+        <div id="map" role="region" aria-label="Mapa interactivo de la Ciénaga de Mallorquín"></div>
+        <aside class="map-side">
+          <h2>Lugares de interés</h2>
+          <ol id="place-list" class="place-list"></ol>
+          <div class="map-actions">
+            <button id="locate" class="btn" type="button">Mostrar mi ubicación</button>
+            <button id="center" class="btn btn-outline" type="button">Volver a la ciénaga</button>
+          </div>
+          <p id="map-status" class="map-status" role="status" aria-live="polite"></p>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>EcoMallorquín · Gestión y conservación de la Ciénaga de Mallorquín, Barranquilla, Atlántico, Colombia.</p>
+      <p>Mapa: © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · Librería: <a href="https://leafletjs.com">Leaflet</a></p>
+    </div>
+  </footer>
+  <script src="assets/vendor/leaflet/leaflet.js"></script>
+  <script src="assets/js/data/places.js"></script>
+  <script src="assets/js/map.js"></script>
+</body>
+</html>

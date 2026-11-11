@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reportar un problema | EcoMallorquín</title>
+  <meta name="description" content="Reporta problemas ambientales o de infraestructura en la Ciénaga de Mallorquín.">
+  <link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;600;700&family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">
+        <img src="assets/img/logo.svg" alt="" width="38" height="38">
+        EcoMallorquín
+      </a>
+      <nav class="site-nav" aria-label="Principal">
+        <a href="index.html">Inicio</a>
+        <a href="mapa.html">Mapa</a>
+        <a href="reportar.html" aria-current="page">Reportar</a>
+        <a href="biodiversidad.html">Biodiversidad</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <section class="page-head">
+      <div class="wrap">
+        <h1>Reportar un problema</h1>
+        <p>Cuéntanos qué viste en la ciénaga: un problema ambiental o un daño en la infraestructura.</p>
+      </div>
+    </section>
+
+    <div class="content">
+      <div class="wrap report-layout">
+        <section aria-labelledby="form-title">
+          <h2 id="form-title">Nuevo reporte</h2>
+          <form id="report-form" class="form">
+            <div class="field">
+              <label for="report-type">Tipo de reporte</label>
+              <select id="report-type" name="type" required>
+                <option value="">Elige un tipo</option>
+                <option value="ambiental">Problema ambiental</option>
+                <option value="infraestructura">Problema de infraestructura</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="report-title">Título</label>
+              <input id="report-title" name="title" type="text" maxlength="100" placeholder="Ej.: acumulación de basura en la zona norte" required>
+            </div>
+            <div class="field">
+              <label for="report-description">Descripción</label>
+              <textarea id="report-description" name="description" maxlength="600" placeholder="Cuenta qué pasó y cuándo lo viste" required></textarea>
+            </div>
+            <div class="field">
+              <label for="report-location">Ubicación</label>
+              <input id="report-location" name="location" type="text" maxlength="100" placeholder="Ej.: cerca del puente, zona oeste" aria-describedby="location-hint">
+              <span id="location-hint" class="hint">Opcional.</span>
+            </div>
+            <div class="field">
+              <label for="report-photo">Fotografía</label>
+              <div class="photo-pick">
+                <input id="report-photo" type="file" accept="image/*" aria-describedby="photo-hint">
+                <img id="photo-preview" class="photo-preview" alt="Vista previa de la foto elegida" hidden>
+              </div>
+              <span id="photo-hint" class="hint">Opcional. Solo se muestra mientras tengas la página abierta.</span>
+            </div>
+            <div><button class="btn" type="submit">Enviar reporte</button></div>
+          </form>
+          <div role="status" aria-live="polite">
+            <p id="report-message" class="notice" hidden></p>
+          </div>
+          <p class="privacy-note">Esta página es una demostración: los reportes quedan guardados solo en tu navegador y no se envían a ninguna entidad.</p>
+        </section>
+
+        <section aria-labelledby="list-title">
+          <h2 id="list-title">Reportes recientes</h2>
+          <ul id="report-list" class="report-list"></ul>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>EcoMallorquín · Gestión y conservación de la Ciénaga de Mallorquín, Barranquilla, Atlántico, Colombia.</p>
+      <p>Mapa: © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · Librería: <a href="https://leafletjs.com">Leaflet</a></p>
+    </div>
+  </footer>
+  <script src="assets/js/data/reports.js"></script>
+  <script src="assets/js/reports.js"></script>
+</body>
+</html>
